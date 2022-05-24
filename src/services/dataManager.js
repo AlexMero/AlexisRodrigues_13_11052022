@@ -1,6 +1,8 @@
-import loginSucceed from '../redux/actions.js'
+// export const serverBaseUrl = 'http://localhost:3001/api/v1'
 
-const serverBaseUrl = 'http://localhost:3001/api/v1'
+import axios from 'axios'
+axios.defaults.baseURL = 'http://localhost:3001/api/v1'
+
 /**
  * [async description]
  *
@@ -14,14 +16,36 @@ async function loginSendData(data) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   }
-  const response = await fetch(serverBaseUrl + '/user/login', requestOptions)
+  const response = await fetch('/user/login', requestOptions)
   const dataJson = await response.json()
   if (dataJson.status === 200) {
-    console.log(dataJson)
+    // console.log(dataJson)
     return { token: dataJson.body.token }
   } else {
     return false
   }
 }
 
-export { loginSendData }
+async function loadUserData(token) {
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    },
+  }
+  const response = await fetch('/user/profile', requestOptions)
+  const dataJson = await response.json()
+  if (dataJson.status === 200) {
+    // console.log(dataJson)
+    const user = {
+      firstName: dataJson.body.firstName,
+      lastName: dataJson.body.lastName,
+    }
+    return user
+  } else {
+    console.log('false', dataJson)
+  }
+}
+
+export { loginSendData, loadUserData }

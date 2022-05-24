@@ -1,11 +1,8 @@
 import { applyMiddleware, createStore } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension'
 import thunk from 'redux-thunk'
-import userReducer from './reducer'
+import reducers from './reducer'
 
-// function getLocalStorage() {
-//   const token = localStorage.getItem('token')
-//   return token === null ? {} : { token }
-// }
+const store = createStore(reducers, composeWithDevTools(applyMiddleware(thunk)))
 
-export const store = createStore(userReducer)
+export { store }
