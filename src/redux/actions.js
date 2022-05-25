@@ -62,7 +62,7 @@ function editNameAction({ firstName, lastName, token }) {
       type: 'loading',
     })
     try {
-      const res = await axios.put(
+      await axios.put(
         'user/profile',
         {
           firstName: firstName,
@@ -74,7 +74,6 @@ function editNameAction({ firstName, lastName, token }) {
           },
         }
       )
-      console.log(res.data)
       dispatch({
         type: 'edit_name_success',
         payload: {

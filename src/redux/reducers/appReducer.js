@@ -75,6 +75,7 @@ const app = (state = makeInitialState(), action) => {
       localStorage.removeItem('token')
       return { ...state, isLogged: false, token: null }
     case 'logout':
+      localStorage.removeItem('token')
       return { ...state, token: null, isLogged: false }
     default:
       return state

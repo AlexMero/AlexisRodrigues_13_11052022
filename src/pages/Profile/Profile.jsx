@@ -73,18 +73,24 @@ function Profile() {
         >
           <input
             type="text"
+            className="firstNameInput"
             placeholder={firstName}
             id="firstNameInput"
             onChange={(e) => setFirstName(e.target.value)}
           />
           <input
             type="text"
+            className="lastNameInput"
             placeholder={lastName}
             id="lastNameInput"
             onChange={(e) => setLastName(e.target.value)}
           />
-          <button type="submit">Save</button>
-          <button onClick={() => setEditName(false)}>Cancel</button>
+          <button type="submit" className="submitButton">
+            Save
+          </button>
+          <button onClick={() => setEditName(false)} className="cancelButton">
+            Cancel
+          </button>
         </form>
       </div>
     )
