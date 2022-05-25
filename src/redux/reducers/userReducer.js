@@ -1,9 +1,7 @@
 /**
  * @typedef {(
- *   "hydrateUser"
- * | "hydrateUser_started"
- * | "hydrateUser_success"
- * | "hydrateUser_failed"
+ * "hydrateUser_success"
+ * | "edit_name_success"
  * )} actionType
  */
 
@@ -24,20 +22,18 @@ const initialState = {
  */
 const user = (state = initialState, action) => {
   switch (action.type) {
-    case 'hydrateUser_started':
-      return {
-        ...state,
-        loading: true,
-      }
     case 'hydrateUser_success':
+      // console.log(action.payload)
       return {
         ...state,
-        ...action.payload,
+        firstName: action.payload.firstName,
+        lastName: action.payload.lastName,
       }
-    case 'hydrateUser_failed':
+    case 'edit_name_success':
       return {
         ...state,
-        error: true,
+        firstName: action.payload.firstName,
+        lastName: action.payload.lastName,
       }
     default:
       return state

@@ -1,32 +1,47 @@
 import Account from '../../components/Account/Account'
 import Footer from '../../components/Footer/Footer'
 import Header from '../../components/Header/Header'
-import { useDispatch, useSelector, useStore } from 'react-redux'
-import { getToken } from '../../redux/selector.js'
-// import { hydrateUser } from '../../redux/actions'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { editNameAction } from '../../redux/actions'
 
 function Profile() {
-  const store = useStore()
-  const state = store.getState()
+  const navigate = useNavigate()
   const dispatch = useDispatch()
-  // console.log(store)
-  const token = useSelector(getToken(state))
-  console.log(token)
   //@ts-ignore
-  // dispatch(hydrateUser(token))
-  // const firstname = useSelector((store) => store.user)
-  // console.group(firstname)
+  const { app, user } = useSelector((state) => state)
+
+  const [editName, setEditName] = useState(false)
+  const [firstName, setFirstName] = useState(user.firstName)
+  const [lastName, setLastName] = useState(user.lastName)
+
+  useEffect(() => {
+    if (!app.isLogged || !app.token) {
+      navigate('/login')
+    }
+  }, [app.isLogged, app.token, navigate])
+
+  const fullName = user.firstName + ' ' + user.lastName + ' !'
   return (
     <div className="body">
-      <Header isConnected={true} />
+      <Header />
       <main className="main bg-dark">
-        <div className="header">
-          <h1>
-            Welcome back
-            <br /> Jarvis!
-          </h1>
-          <button className="edit-button">Edit Name</button>
-        </div>
+        {editName ? (
+          templateEditName()
+        ) : (
+          <div className="header">
+            <h1>
+              Welcome back
+              <br />
+              {fullName}
+            </h1>
+            <button className="edit-button" onClick={() => setEditName(true)}>
+              Edit Name
+            </button>
+          </div>
+        )}
+
         <h2 className="sr-only">Accounts</h2>
         <Account
           amount={2082.79}
@@ -47,6 +62,46 @@ function Profile() {
       <Footer />
     </div>
   )
+
+  function templateEditName() {
+    return (
+      <div className="header">
+        <h1>Welcome back</h1>
+        <form
+          className="editNameContainer"
+          onSubmit={(evt) => editNameSubmit(evt)}
+        >
+          <input
+            type="text"
+            placeholder={firstName}
+            id="firstNameInput"
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder={lastName}
+            id="lastNameInput"
+            onChange={(e) => setLastName(e.target.value)}
+          />
+          <button type="submit">Save</button>
+          <button onClick={() => setEditName(false)}>Cancel</button>
+        </form>
+      </div>
+    )
+  }
+
+  function editNameSubmit(evt) {
+    evt.preventDefault()
+    dispatch(
+      //@ts-ignore
+      editNameAction({
+        firstName: firstName,
+        lastName: lastName,
+        token: app.token,
+      })
+    )
+    setEditName(false)
+  }
 }
 
 export default Profile

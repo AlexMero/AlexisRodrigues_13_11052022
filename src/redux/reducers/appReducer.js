@@ -1,10 +1,13 @@
 /**
  * @typedef {(
- * "login_loading"
+ * "loading"
+ * | "unloading"
  * | "login_succeed"
  * | "login_failed"
- * | "loadingProfile"
  * | "logout"
+ * | "ckeck_token_failed"
+ * | "hydrateUser_success"
+ * | "hydrateUser_failed"
  * )} actionType
  */
 
@@ -33,11 +36,17 @@ function makeInitialState() {
  * @return  {Object}                [return description]
  */
 const app = (state = makeInitialState(), action) => {
+  // console.log('>>>', action)
   switch (action.type) {
-    case 'login_loading':
+    case 'loading':
       return {
         ...state,
         loading: true,
+      }
+    case 'unloading':
+      return {
+        ...state,
+        loading: false,
       }
     case 'login_failed':
       const loginForm = document.getElementById('loginSection')
@@ -47,20 +56,26 @@ const app = (state = makeInitialState(), action) => {
         'shake 0.82s cubic-bezier(.36,.07,.19,.97) both'
       return {
         ...state,
+        loading: false,
       }
     case 'login_succeed':
-      localStorage.setItem('token', 'XXXX')
+      localStorage.setItem('token', action.payload.token)
       return {
         ...state,
-        token: action.payload.token.token,
+        token: action.payload.token,
         isLogged: true,
+        loading: false,
       }
-    case 'loadingProfile': {
-      return {
-        ...state,
-        loading: true,
-      }
-    }
+    case 'ckeck_token_failed':
+      localStorage.removeItem('token')
+      return { ...state, token: null, loading: false }
+    case 'hydrateUser_success':
+      return { ...state, isLogged: true, loading: false }
+    case 'hydrateUser_failed':
+      localStorage.removeItem('token')
+      return { ...state, isLogged: false, token: null }
+    case 'logout':
+      return { ...state, token: null, isLogged: false }
     default:
       return state
   }
