@@ -51,7 +51,7 @@ function Form() {
           />
         </div>
         <div className="input-remember">
-          <input type="checkbox" id="remember-me" />
+          <input type="checkbox" id="remember-me" checked disabled />
           <label>Remember me</label>
         </div>
         <button type="submit" className="sign-in-button">
